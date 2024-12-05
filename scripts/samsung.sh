@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Lista de pacotes para desinstalar da Samsung (com. antes do nome do pacote)
+# List of packages to uninstall from Samsung (com. before the package name)
 declare -a samsung_bloatware=(
     "com.samsung.android.bixby.wakeup"
     "com.samsung.android.app.spage"
@@ -173,45 +173,45 @@ declare -a samsung_bloatware=(
     "com.microsoft.skydrive"
 )
 
-# Função para desinstalar o bloatware
+# Function to uninstall bloatware
 remove_bloatware() {
     for pkg in "${samsung_bloatware[@]}"; do
-        echo -n "Você deseja desinstalar, desativar e forçar parada do pacote: $pkg (y/n)? "
+        echo -n "You want to uninstall, disable and force stop the package: $pkg (y/n)? "
         read -r choice
         if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
-            # Forçar parada
-            echo "Forçando parada do pacote: $pkg..."
+            # Force stop
+            echo "Forcing packet stop: $pkg..."
             adb shell am force-stop "$pkg"
             if [[ $? -eq 0 ]]; then
-                echo "Sucesso: $pkg foi parado."
+                echo "Success: $pkg was stopped."
             else
-                echo "Erro: Não foi possível parar $pkg."
+                echo "Error: Unable to stop $pkg."
             fi
 
-            # Desativar o aplicativo
-            echo "Desativando o pacote: $pkg..."
+            # Disable the application
+            echo "Disabling the package: $pkg..."
             adb shell pm disable-user --user 0 "$pkg"
             if [[ $? -eq 0 ]]; then
-                echo "Sucesso: $pkg foi desativado."
+                echo "Success: $pkg has been deactivated."
             else
-                echo "Erro: Não foi possível desativar $pkg."
+                echo "Error: Unable to deactivate $pkg."
             fi
 
-            # Desinstalar o aplicativo
-            echo "Desinstalando o pacote: $pkg..."
+            # Uninstall the application
+            echo "Uninstalling the package: $pkg..."
             adb shell pm uninstall --user 0 "$pkg"
             if [[ $? -eq 0 ]]; then
-                echo "Sucesso: $pkg foi desinstalado."
+                echo "Success: $pkg has been uninstalled."
             else
-                echo "Erro: Não foi possível desinstalar $pkg."
+                echo "Erro: Unable to uninstall $pkg."
             fi
         else
-            echo "Pulando o pacote: $pkg."
+            echo "Skipping the package: $pkg."
         fi
     done
 }
 
-# Iniciar a remoção de bloatware
-echo "Iniciando a remoção de bloatware."
+# Start bloatware removal
+echo "Starting bloatware removal."
 remove_bloatware
-echo "Processo concluído."
+echo "Process completed."

@@ -1,35 +1,35 @@
 #!/bin/bash
 
-# Lista de comandos com descrições
+# List of commands with descriptions
 commands=(
-    "background_process_limit:Limitar processos em segundo plano para 1"
-    "cached_apps_freezer:Habilitar suspensão para apps em cache"
-    "always_finish_activities:Fechar atividades ao sair"
-    "ram_plus_feature_enabled:Desativar RAM+"
-    "app_hibernation_enabled:Habilitar hibernação de aplicativos"
-    "adaptive_battery_management_enabled:Habilitar gerenciamento de bateria adaptável"
-    "wifi_scan_always_enabled:Desativar varredura de Wi-Fi constante"
-    "ble_scan_always_enabled:Desativar varredura de Bluetooth constante"
-    "location_accuracy_enabled:Desativar precisão de localização do Google"
-    "usage_reporting_enabled:Desativar envio de dados e diagnósticos"
-    "auto_update_apps:Desativar atualizações automáticas da Play Store"
-    "wifi_scan_throttle_enabled:Habilitar limitação de varredura de Wi-Fi"
-    "preferred_network_mode:Forçar uso de rede 4G em vez de 5G"
-    "auto_sync:Desativar sincronização automática"
-    "double_tap_to_wake:Desativar toque duplo para ativar tela"
-    "screen_brightness_mode:Habilitar brilho adaptável"
-    "screen_resolution:Reduzir resolução da tela"
-    "screen_density:Ajustar densidade da tela"
+    "background_process_limit:Limit background processes to 1"
+    "cached_apps_freezer:Enable suspend for cached apps"
+    "always_finish_activities:Close activities when leaving"
+    "ram_plus_feature_enabled:Disable RAM+"
+    "app_hibernation_enabled:Enable application hibernation"
+    "adaptive_battery_management_enabled:Enable Adaptive Battery Management"
+    "wifi_scan_always_enabled:Disable constant Wi-Fi scanning"
+    "ble_scan_always_enabled:Disable constant Bluetooth scanning"
+    "location_accuracy_enabled:Disable Google Location Accuracy"
+    "usage_reporting_enabled:Disable sending data and diagnostics"
+    "auto_update_apps:Disable automatic Play Store updates"
+    "wifi_scan_throttle_enabled:Habilitar Wi-Fi scanning limitation"
+    "preferred_network_mode:Force use of 4G network instead of 5G"
+    "auto_sync:Disable automatic sync"
+    "double_tap_to_wake:Disable double tap to wake screen"
+    "screen_brightness_mode:Enable adaptive brightness"
+    "screen_resolution:Reduce screen resolution"
+    "screen_density:Adjust screen density"
     "disable_wellbeing:Desativar o Bem-Estar Digital"
 )
 
-# Função para aplicar comandos individualmente
+# Function to apply commands individually
 apply_command() {
     key=$1
     value=$2
     description=$3
 
-    echo "Deseja aplicar a configuração: $description? (y/n)"
+    echo "Do you want to apply the configuration: $description? (y/n)"
     read -r choice
     if [[ $choice == "y" || $choice == "Y" ]]; then
         case $key in
@@ -46,15 +46,15 @@ apply_command() {
                 adb shell settings put global "$key" "$value"
                 ;;
         esac
-        echo "Configuração aplicada: $description"
+        echo "Applied configuration: $description"
     else
-        echo "Configuração ignorada: $description"
+        echo "Configuration ignored: $description"
     fi
 }
 
-# Função para restaurar configurações
+# Function to restore settings
 revert_commands() {
-    echo "Revertendo configurações para os padrões..."
+    echo "Reverting settings to defaults..."
     adb shell settings delete global device_idle_constants
     adb shell settings delete global background_process_limit
     adb shell settings delete global cached_apps_freezer
@@ -75,20 +75,20 @@ revert_commands() {
     adb shell wm size reset
     adb shell wm density reset
     adb shell pm enable com.google.android.apps.wellbeing
-    echo "Configurações revertidas para os padrões!"
+    echo "Settings reverted to defaults!"
 }
 
-# Perguntar ao usuário se deseja restaurar as configurações padrão antes de continuar
-echo "Deseja restaurar as configurações padrão de otimização de bateria antes de continuar? (y/n/c)"
+# Ask the user if they want to restore default settings before continuing
+echo "Do you want to restore the default battery optimization settings before continuing? (y/n/c)"
 read -r reset_choice
 
 if [[ $reset_choice == "y" || $reset_choice == "Y" ]]; then
     revert_commands
 elif [[ $reset_choice == "c" || $reset_choice == "C" ]]; then
-    echo "Continuando sem restaurar configurações padrão..."
+    echo "Continuing without restoring default settings..."
 fi
 
-# Aplicar comandos um por um
+# Apply commands one by one
 for cmd in "${commands[@]}"; do
     key=$(echo "$cmd" | cut -d':' -f1)
     description=$(echo "$cmd" | cut -d':' -f2)
@@ -100,4 +100,4 @@ for cmd in "${commands[@]}"; do
     fi
 done
 
-echo "Todas as configurações foram processadas!"
+echo "All settings have been processed!"
